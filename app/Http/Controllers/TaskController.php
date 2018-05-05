@@ -12,9 +12,11 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Task $task)
     {
-        //
+        $tasks = $task->latest()->paginate(5);
+
+        return view('welcome', compact('tasks'));
     }
 
     /**
@@ -35,7 +37,19 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'content' => 'required'
+        ]);
+
+        $input = $request->all();
+
+        $task = Task::create($input);
+
+        return response()->json([
+            'success' => true,
+            'task' => $task
+        ]);
     }
 
     /**
@@ -46,7 +60,6 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        //
     }
 
     /**
@@ -57,7 +70,7 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        //
+        return $task;
     }
 
     /**
@@ -69,7 +82,19 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'content' => 'required'
+        ]);
+
+        $task->name = $request->get('name');
+        $task->content = $request->get('content');
+        $task->save();
+
+        return response()->json([
+            'success' => true,
+            'task' => $task
+        ]);
     }
 
     /**
@@ -80,6 +105,11 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task Deleted'
+        ]);
     }
 }

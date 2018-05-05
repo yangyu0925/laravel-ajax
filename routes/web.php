@@ -12,5 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/task');
 });
+
+
+Route::resource('/task', 'TaskController');
